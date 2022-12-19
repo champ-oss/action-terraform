@@ -1,0 +1,12 @@
+name: terraform
+description: https://github.com/champ-oss/action-terraform
+
+runs:
+  using: "composite"
+  steps:
+    #- name: pip install
+    #  shell: bash
+    #  run: cd ${GITHUB_ACTION_PATH} && pip3 install -r requirements.txt
+    - name: main
+      shell: bash
+      run: python ${GITHUB_ACTION_PATH}/main.py
