@@ -5,4 +5,9 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: echo
+      - uses: actions/checkout@v3 # https://github.com/actions/checkout/releases
+      - uses: actions/setup-python@v4 # https://github.com/actions/setup-python/releases
+        with:
+          python-version: '3.10'
+      - run: pip install -r requirement.txt
+      - run: pytest
