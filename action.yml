@@ -4,9 +4,7 @@ description: https://github.com/champ-oss/action-terraform
 runs:
   using: "composite"
   steps:
-    #- name: pip install
-    #  shell: bash
-    #  run: cd ${GITHUB_ACTION_PATH} && pip3 install -r requirements.txt
-    - name: main
+    - run: pip install -r ${GITHUB_ACTION_PATH}/requirements.txt
       shell: bash
-      run: python ${GITHUB_ACTION_PATH}/main.py
+    - run: python ${GITHUB_ACTION_PATH}/main.py
+      shell: bash
