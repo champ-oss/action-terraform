@@ -5,4 +5,4 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: ${{ join([github.repository, github.sha], '@') }}
+      - run: echo ${{ join([github.repository, github.sha], '@') }}
