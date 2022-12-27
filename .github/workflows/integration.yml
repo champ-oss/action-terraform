@@ -5,4 +5,4 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ format('{0}@{1}', github.repository, github.sha) }}
+      - uses: ${{ format('{0}@{1}', github.repository, github.sha) }}
