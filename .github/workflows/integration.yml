@@ -5,4 +5,5 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      - run: env
       - uses: ./
