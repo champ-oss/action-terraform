@@ -5,5 +5,4 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3 # https://github.com/actions/checkout/releases
       - uses: ./
