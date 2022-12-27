@@ -4,6 +4,7 @@ description: https://github.com/champ-oss/action-terraform
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v3 # https://github.com/actions/checkout/releases
     - run: pip install -r ${GITHUB_ACTION_PATH}/requirements.txt
       shell: bash
     - run: python ${GITHUB_ACTION_PATH}/main.py
