@@ -5,4 +5,5 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: ${{ format('{0}@{1}', github.repository, github.sha) }}
+      - uses: actions/checkout@v3 # https://github.com/actions/checkout/releases
+      - uses: ./
