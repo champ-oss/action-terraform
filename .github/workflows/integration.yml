@@ -5,5 +5,4 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: env
-      - uses: ./
+      - uses: ${{ github.repository }}@${{ github.sha }}
