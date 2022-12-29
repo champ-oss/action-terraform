@@ -13,6 +13,8 @@ def connect_backend(prefix: str = 'terraform-backend'):
 
 
 def find_bucket(prefix: str = 'terraform-backend'):
+    logging.info('finding s3 bucket')
+
     s3 = boto3.client('s3')
     response = s3.list_buckets()
     matched_buckets = []
@@ -24,30 +26,33 @@ def find_bucket(prefix: str = 'terraform-backend'):
             matched_buckets.append(bucket)
 
     if len(matched_buckets) < 1:
-        print('No bucket found')
+        logging.info('No bucket found')
         return ''
 
     if len(matched_buckets) > 1:
-        print('Multiple buckets found: ', matched_buckets)
-        return ''
+        logging.error('Multiple buckets found: ', matched_buckets)
+        exit()
 
     return matched_buckets.pop()
 
 
 def create_bucket(prefix: str = 'terraform-backend'):
-    print('create bucket')
+    logging.info('creating bucket')
     return prefix
 
 
 def create_backend(bucket: str = 'terraform-backend'):
+    logging.info('creating backend.tf')
     return bucket
 
 
 def apply():
+    logging.info('applying terraform configuration')
     return
 
 
 def main():
+    logging.getLogger().setLevel(logging.INFO)
     connect_backend()
     apply()
 
