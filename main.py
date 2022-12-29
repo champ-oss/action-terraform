@@ -1,4 +1,4 @@
-def connect_backend():
+def connect_backend(prefix: str = 'terraform-backend'):
     return
 
 
