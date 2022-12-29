@@ -1,9 +1,14 @@
-def hello():
-    return 'hello'
+def connect_backend():
+    return
+
+
+def apply():
+    return
 
 
 def main():
-    print(hello())
+    connect_backend()
+    apply()
 
 
 main()
