@@ -9,7 +9,8 @@ def connect_backend(prefix: str = 'terraform-backend'):
     if bucket == '':
         bucket = create_bucket(prefix)
 
-    return create_backend(bucket)
+    create_backend(bucket)
+    return
 
 
 def find_bucket(prefix: str = 'terraform-backend'):
@@ -18,8 +19,6 @@ def find_bucket(prefix: str = 'terraform-backend'):
     s3 = boto3.client('s3')
     response = s3.list_buckets()
     matched_buckets = []
-
-    logging.debug(response)
 
     for bucket in response['Buckets']:
         if bucket["Name"].startswith(prefix):
@@ -52,7 +51,7 @@ def apply():
 
 
 def main():
-    logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     connect_backend()
     apply()
 
