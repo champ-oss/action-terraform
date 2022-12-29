@@ -35,13 +35,12 @@ def find_bucket(prefix: str = 'terraform-backend'):
 
 
 def create_bucket(prefix: str = 'terraform-backend'):
-    bucket = ''
     print('create bucket')
-    return bucket
+    return prefix
 
 
 def create_backend(bucket: str = 'terraform-backend'):
-    return
+    return bucket
 
 
 def apply():
