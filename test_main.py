@@ -52,7 +52,7 @@ def test_apply_returns():
     try:
         apply(directory)
     except Exception:
-        pass  # for this test we only care about the state of the current working directory
+        pass  # we are only testing current working directory behavior
 
     assert os.getcwd() == start_directory
     os.chdir(test_root)
