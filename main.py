@@ -3,15 +3,6 @@ import boto3
 from pygit2 import Repository
 
 
-def connect_backend(prefix: str = 'terraform-backend'):
-    bucket = find_bucket(prefix)
-
-    if bucket == '':
-        create_bucket()
-
-    create_backend(bucket)
-
-
 def find_bucket(prefix: str = 'terraform-backend') -> str:
     print('finding s3 bucket')
 
@@ -67,7 +58,14 @@ def apply(directory: str = './'):
 
 
 def main():
-    connect_backend()
+    prefix = 'terraform-backend'
+    bucket = find_bucket(prefix)
+
+    if bucket == '':
+        create_bucket()
+
+    create_backend(bucket)
+
     apply()
 
 
