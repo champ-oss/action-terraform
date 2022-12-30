@@ -18,6 +18,9 @@ def setup():
 def teardown():
     os.chdir(test_root)
     shutil.rmtree(test_directory)
+    shutil.rmtree('.terraform')
+    os.remove('terraform.tfplan')
+    os.remove('backend.tf')
 
 
 def create_test_directory():
