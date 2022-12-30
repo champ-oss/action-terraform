@@ -33,9 +33,9 @@ def find_bucket(prefix: str = 'terraform-backend') -> str:
     return matched_buckets.pop()
 
 
-def create_bucket(prefix: str = 'terraform-backend') -> str:
+def create_bucket():
     print('creating bucket')
-    return prefix
+    apply(os.path.dirname(os.path.realpath(__file__)) + '/s3')
 
 
 def create_backend(bucket: str = 'terraform-backend') -> str:
