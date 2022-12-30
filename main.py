@@ -46,11 +46,13 @@ def create_backend(bucket: str = 'terraform-backend'):
 
 def apply(directory: str = './'):
     print('applying terraform configuration')
+    start_directory = os.getcwd()
     os.chdir(directory)
     os.system('terraform init')
     os.system('terraform validate')
     os.system('terraform plan -out=terraform.tfplan')
     os.system('terraform apply --auto-approve terraform.tfplan')
+    os.chdir(start_directory)
     return
 
 
