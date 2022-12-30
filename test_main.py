@@ -47,6 +47,12 @@ def test_apply():
 def test_apply_returns():
     directory = create_test_directory()
     start_directory = os.getcwd()
-    apply(directory)
+
+    # noinspection PyBroadException
+    try:
+        apply(directory)
+    except Exception:
+        pass  # for this test we only care about the state of the current working directory
+
     assert os.getcwd() == start_directory
     os.chdir(test_root)
