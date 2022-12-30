@@ -51,7 +51,7 @@ def apply(directory: str = './'):
     os.system('terraform validate')
     os.system('terraform plan -out=terraform.tfplan')
     os.system('terraform apply --auto-approve terraform.tfplan')
-    # os.chdir(start_directory)
+    os.chdir(start_directory)
 
 
 def main():
