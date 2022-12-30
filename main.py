@@ -10,10 +10,9 @@ def connect_backend(prefix: str = 'terraform-backend'):
         bucket = create_bucket(prefix)
 
     create_backend(bucket)
-    return
 
 
-def find_bucket(prefix: str = 'terraform-backend'):
+def find_bucket(prefix: str = 'terraform-backend') -> str:
     print('finding s3 bucket')
 
     s3 = boto3.client('s3')
@@ -34,12 +33,12 @@ def find_bucket(prefix: str = 'terraform-backend'):
     return matched_buckets.pop()
 
 
-def create_bucket(prefix: str = 'terraform-backend'):
+def create_bucket(prefix: str = 'terraform-backend') -> str:
     print('creating bucket')
     return prefix
 
 
-def create_backend(bucket: str = 'terraform-backend'):
+def create_backend(bucket: str = 'terraform-backend') -> str:
     print('creating backend.tf')
     return bucket
 
@@ -53,7 +52,6 @@ def apply(directory: str = './'):
     os.system('terraform plan -out=terraform.tfplan')
     os.system('terraform apply --auto-approve terraform.tfplan')
     os.chdir(start_directory)
-    return
 
 
 def main():

@@ -1,8 +1,7 @@
-import shutil
-
 from main import *
 import os
 import inspect
+import shutil
 
 test_root = os.path.dirname(os.path.realpath(__file__))
 test_directory = '.test'
@@ -48,6 +47,12 @@ def test_apply():
 def test_apply_returns():
     directory = create_test_directory()
     start_directory = os.getcwd()
-    apply(directory)
+
+    # noinspection PyBroadException
+    try:
+        apply(directory)
+    except Exception:
+        pass  # we are only testing current working directory behavior
+
     assert os.getcwd() == start_directory
     os.chdir(test_root)
