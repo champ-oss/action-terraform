@@ -1,7 +1,10 @@
+import shutil
+
 from main import *
 import os
 import inspect
 
+test_root = os.path.dirname(os.path.realpath(__file__))
 test_directory = '.test'
 test_hcl = 'resource "random_pet" "this" {}'
 
@@ -13,8 +16,9 @@ def setup():
         print(test_directory + ' already exists')
 
 
-def clean():
-    os.remove(test_directory)
+def teardown():
+    os.chdir(test_root)
+    shutil.rmtree(test_directory)
 
 
 def create_test_directory():
@@ -36,17 +40,14 @@ def create_test_directory():
 def test_apply():
     directory = create_test_directory()
     apply(directory)
-
-    # assert hello() == 'hello'
-    return
+    os.chdir(directory)
+    assert os.system('terraform plan --detailed-exitcode') == 0
+    os.chdir(test_root)
 
 
 def test_apply_returns():
-    # create test dir
-
-    # create test main.tf
-
-    # call apply
-
-    # assert hello() == 'hello'
-    return
+    directory = create_test_directory()
+    start_directory = os.getcwd()
+    apply(directory)
+    assert os.getcwd() == start_directory
+    os.chdir(test_root)
