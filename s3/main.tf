@@ -1,3 +1,4 @@
+//noinspection MissingModule
 module "this" {
   source                  = "terraform-aws-modules/s3-bucket/aws"
   version                 = "3.6.0"
