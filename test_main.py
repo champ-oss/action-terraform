@@ -1,8 +1,7 @@
-import shutil
-
 from main import *
 import os
 import inspect
+import shutil
 
 test_root = os.path.dirname(os.path.realpath(__file__))
 test_directory = '.test'
