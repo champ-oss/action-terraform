@@ -1,6 +1,6 @@
 import os
-
 import boto3
+from pygit2 import Repository
 
 
 def connect_backend(prefix: str = 'terraform-backend'):
@@ -40,7 +40,18 @@ def create_bucket():
 
 def create_backend(bucket: str = 'terraform-backend') -> str:
     print('creating backend.tf')
-    return bucket
+
+    repo = 'test'
+    branch = Repository('.').head.shorthand
+
+    f = open('backend.tf', 'w')
+    f.write('terraform {')
+    f.write('  backend "s3" {')
+    f.write('    bucket = "' + bucket + '"')
+    f.write('    key    = "' + repo + '/' + branch + '.json"')
+    f.write('  }')
+    f.write('}')
+    f.close()
 
 
 def apply(directory: str = './'):
