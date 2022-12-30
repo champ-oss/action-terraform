@@ -49,6 +49,7 @@ def create_backend(bucket: str = 'terraform-backend') -> str:
     f.write('  backend "s3" {\n')
     f.write('    bucket = "' + bucket + '"\n')
     f.write('    key    = "' + repo + '/' + branch + '.json"\n')
+    f.write('    region = "us-east-2"\n')
     f.write('  }\n')
     f.write('}\n')
     f.close()

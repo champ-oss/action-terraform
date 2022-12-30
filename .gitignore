@@ -62,3 +62,4 @@ pytestdebug.log
 .test
 backend.tf
 .terraform
+terraform.*
