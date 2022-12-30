@@ -1,1 +1,62 @@
-print("test")
+import os
+
+import boto3
+
+
+def connect_backend(prefix: str = 'terraform-backend'):
+    bucket = find_bucket(prefix)
+
+    if bucket == '':
+        bucket = create_bucket(prefix)
+
+    create_backend(bucket)
+    return
+
+
+def find_bucket(prefix: str = 'terraform-backend'):
+    print('finding s3 bucket')
+
+    s3 = boto3.client('s3')
+    response = s3.list_buckets()
+    matched_buckets = []
+
+    for bucket in response['Buckets']:
+        if bucket["Name"].startswith(prefix):
+            matched_buckets.append(bucket)
+
+    if len(matched_buckets) < 1:
+        print('No bucket found')
+        return ''
+
+    if len(matched_buckets) > 1:
+        print('Multiple buckets found: ', matched_buckets)
+
+    return matched_buckets.pop()
+
+
+def create_bucket(prefix: str = 'terraform-backend'):
+    print('creating bucket')
+    return prefix
+
+
+def create_backend(bucket: str = 'terraform-backend'):
+    print('creating backend.tf')
+    return bucket
+
+
+def apply(directory: str = './'):
+    print('applying terraform configuration')
+    os.chdir(directory)
+    os.system('terraform init')
+    os.system('terraform validate')
+    os.system('terraform plan -out=terraform.tfplan')
+    os.system('terraform apply --auto-approve terraform.tfplan')
+    return
+
+
+def main():
+    connect_backend()
+    apply()
+
+
+main()
