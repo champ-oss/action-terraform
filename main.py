@@ -7,7 +7,7 @@ def connect_backend(prefix: str = 'terraform-backend'):
     bucket = find_bucket(prefix)
 
     if bucket == '':
-        bucket = create_bucket(prefix)
+        create_bucket()
 
     create_backend(bucket)
 

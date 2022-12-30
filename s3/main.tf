@@ -8,7 +8,8 @@ module "this" {
   restrict_public_buckets = true
 
   versioning = {
-    status = true
+    status     = true
+    mfa_delete = false
   }
 
   server_side_encryption_configuration = {
