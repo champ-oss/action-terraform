@@ -21,7 +21,7 @@ def find_bucket(prefix: str = 'terraform-backend') -> str:
 
     for bucket in response['Buckets']:
         if bucket["Name"].startswith(prefix):
-            matched_buckets.append(bucket)
+            matched_buckets.append(bucket["Name"])
 
     if len(matched_buckets) < 1:
         print('No bucket found')
@@ -45,12 +45,12 @@ def create_backend(bucket: str = 'terraform-backend') -> str:
     branch = Repository('.').head.shorthand
 
     f = open('backend.tf', 'w')
-    f.write('terraform {')
-    f.write('  backend "s3" {')
-    f.write('    bucket = "' + bucket + '"')
-    f.write('    key    = "' + repo + '/' + branch + '.json"')
-    f.write('  }')
-    f.write('}')
+    f.write('terraform {\n')
+    f.write('  backend "s3" {\n')
+    f.write('    bucket = "' + bucket + '"\n')
+    f.write('    key    = "' + repo + '/' + branch + '.json"\n')
+    f.write('  }\n')
+    f.write('}\n')
     f.close()
 
 

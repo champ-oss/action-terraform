@@ -60,3 +60,5 @@ pytestdebug.log
 
 # custom testing directory
 .test
+backend.tf
+.terraform

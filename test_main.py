@@ -5,7 +5,7 @@ import shutil
 
 test_root = os.path.dirname(os.path.realpath(__file__))
 test_directory = '.test'
-test_hcl = 'resource "random_pet" "this" {}'
+test_hcl = 'resource "random_pet" "this" {}\n'
 
 
 def setup():
