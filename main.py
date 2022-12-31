@@ -48,7 +48,7 @@ def apply(directory: str = './'):
     print('applying terraform configuration')
 
     start_directory = os.getcwd()
-    
+
     os.chdir(directory)
     os.system('terraform init')
     os.system('terraform validate')
@@ -58,14 +58,15 @@ def apply(directory: str = './'):
 
 
 def main():
-    prefix = 'terraform-backend'
-    bucket = find_bucket(prefix)
-    repo = 'test'
-    branch = Repository('.').head.shorthand
-    key = repo + '/' + branch
+    prefix: str = 'terraform-backend'
+    bucket: str = find_bucket(prefix)
+    repo: str = 'test'
+    branch: str = Repository('.').head.shorthand
+    key: str = repo + '/' + branch
 
     if bucket == '':
         create_bucket()
+        bucket: str = find_bucket(prefix)
 
     create_backend(bucket, key)
 
