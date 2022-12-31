@@ -3,8 +3,8 @@ import os
 import inspect
 import shutil
 
-test_root = os.path.dirname(os.path.realpath(__file__))
-test_directory = '.test'
+test_root = os.getcwd()
+test_directory = test_root + '/.test/'
 test_hcl = 'resource "random_pet" "this" {}\n'
 
 
@@ -25,7 +25,7 @@ def teardown():
 
 def create_test_directory():
     calling_function = inspect.stack()[1].function
-    directory = '.test/' + calling_function
+    directory = test_directory + calling_function
 
     try:
         os.mkdir(directory)
@@ -64,6 +64,7 @@ def test_apply_returns():
 
 def test_backend_is_valid():
     os.chdir(create_test_directory())
+    os.system('terraform init')
     create_backend('this', 'that')
     assert os.system('terraform validate') == 0
     os.chdir(test_root)
