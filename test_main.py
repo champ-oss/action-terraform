@@ -41,6 +41,7 @@ def create_test_directory():
 
 def test_apply():
     directory = create_test_directory()
+
     apply(directory)
     os.chdir(directory)
     assert os.system('terraform plan --detailed-exitcode') == 0
@@ -58,4 +59,18 @@ def test_apply_returns():
         pass  # we are only testing current working directory behavior
 
     assert os.getcwd() == start_directory
+    os.chdir(test_root)
+
+
+def test_backend_is_valid():
+    os.chdir(create_test_directory())
+    create_backend('this', 'that')
+    assert os.system('terraform validate') == 0
+    os.chdir(test_root)
+
+
+def test_backend_is_formatted():
+    os.chdir(create_test_directory())
+    create_backend('this', 'that')
+    assert os.system('terraform fmt -check') == 0
     os.chdir(test_root)

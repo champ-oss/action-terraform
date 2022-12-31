@@ -26,21 +26,19 @@ def find_bucket(prefix: str = 'terraform-backend') -> str:
 
 def create_bucket():
     print('creating bucket')
+
     apply(os.path.dirname(os.path.realpath(__file__)) + '/s3')
 
 
-def create_backend(bucket: str = 'terraform-backend') -> str:
+def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     print('creating backend.tf')
-
-    repo = 'test'
-    branch = Repository('.').head.shorthand
 
     f = open('backend.tf', 'w')
     f.write('terraform {\n')
     f.write('  backend "s3" {\n')
     f.write('    bucket = "' + bucket + '"\n')
-    f.write('    key    = "' + repo + '/' + branch + '.json"\n')
-    f.write('    region = "us-east-2"\n')
+    f.write('    key    = "' + key + '.json"\n')
+    f.write('    region = "' + region + '"\n')
     f.write('  }\n')
     f.write('}\n')
     f.close()
@@ -48,7 +46,9 @@ def create_backend(bucket: str = 'terraform-backend') -> str:
 
 def apply(directory: str = './'):
     print('applying terraform configuration')
+
     start_directory = os.getcwd()
+    
     os.chdir(directory)
     os.system('terraform init')
     os.system('terraform validate')
@@ -60,11 +60,14 @@ def apply(directory: str = './'):
 def main():
     prefix = 'terraform-backend'
     bucket = find_bucket(prefix)
+    repo = 'test'
+    branch = Repository('.').head.shorthand
+    key = repo + '/' + branch
 
     if bucket == '':
         create_bucket()
 
-    create_backend(bucket)
+    create_backend(bucket, key)
 
     apply()
 
