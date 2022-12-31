@@ -1,4 +1,5 @@
 import os
+from typing import TextIO
 import boto3
 from pygit2 import Repository
 
@@ -25,6 +26,9 @@ def find_bucket(prefix: str = 'terraform-backend') -> str:
 
 
 def create_bucket():
+    # todo - accept prefix
+    # todo - return bucket name
+    # todo - test
     print('creating bucket')
 
     apply(os.path.dirname(os.path.realpath(__file__)) + '/s3')
@@ -33,7 +37,7 @@ def create_bucket():
 def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     print('creating backend.tf')
 
-    f = open('backend.tf', 'w')
+    f: TextIO = open('backend.tf', 'w')
     f.write('terraform {\n')
     f.write('  backend "s3" {\n')
     f.write('    bucket = "' + bucket + '"\n')
@@ -45,9 +49,11 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
 
 
 def apply(directory: str = './'):
+    # todo - load .tfvars
+    # todo - protect against github reruns
     print('applying terraform configuration')
 
-    start_directory = os.getcwd()
+    start_directory: str = os.getcwd()
 
     os.chdir(directory)
     os.system('terraform init')
@@ -70,7 +76,12 @@ def main():
 
     create_backend(bucket, key)
 
+    # todo - switch function based on github job name
+    # todo - allow overrides for explicit calls and local execution
     apply()
+
+    # todo - rich output
+    # todo - display clickable URLs
 
 
 main()
