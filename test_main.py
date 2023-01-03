@@ -3,9 +3,9 @@ import os
 import inspect
 import shutil
 
-test_root = os.path.dirname(os.path.realpath(__file__))
-test_directory = '.test'
-test_hcl = 'resource "random_pet" "this" {}\n'
+test_root: str = os.getcwd()
+test_directory: str = test_root + '/.test/'
+test_hcl: str = 'resource "random_pet" "this" {}\n'
 
 
 def setup():
@@ -23,9 +23,9 @@ def teardown():
     os.remove('backend.tf')
 
 
-def create_test_directory():
-    calling_function = inspect.stack()[1].function
-    directory = '.test/' + calling_function
+def create_test_directory() -> str:
+    calling_function: str = inspect.stack()[1].function
+    directory: str = test_directory + calling_function
 
     try:
         os.mkdir(directory)
@@ -40,7 +40,8 @@ def create_test_directory():
 
 
 def test_apply():
-    directory = create_test_directory()
+    directory: str = create_test_directory()
+
     apply(directory)
     os.chdir(directory)
     assert os.system('terraform plan --detailed-exitcode') == 0
@@ -48,14 +49,26 @@ def test_apply():
 
 
 def test_apply_returns():
-    directory = create_test_directory()
-    start_directory = os.getcwd()
-
     # noinspection PyBroadException
     try:
-        apply(directory)
+        apply(create_test_directory())
     except Exception:
         pass  # we are only testing current working directory behavior
 
-    assert os.getcwd() == start_directory
+    assert os.getcwd() == test_root
+    os.chdir(test_root)
+
+
+def test_backend_is_valid():
+    os.chdir(create_test_directory())
+    os.system('terraform init')
+    create_backend('this', 'that')
+    assert os.system('terraform validate') == 0
+    os.chdir(test_root)
+
+
+def test_backend_is_formatted():
+    os.chdir(create_test_directory())
+    create_backend('this', 'that')
+    assert os.system('terraform fmt -check') == 0
     os.chdir(test_root)
