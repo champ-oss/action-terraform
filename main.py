@@ -69,8 +69,11 @@ def main():
     repo: str = 'test'
     branch: str = Repository('.').head.shorthand
     key: str = repo + '/' + branch
+    os.environ["TF_INPUT"] = "false"
+    os.environ["TF_IN_AUTOMATION"] = "true"
 
     if bucket == '':
+        # this block might need a locking mechanism
         create_bucket()
         bucket: str = find_bucket(prefix)
 
