@@ -63,18 +63,24 @@ def apply(directory: str = './'):
     os.chdir(start_directory)
 
 
+def get_repo_name() -> str:
+    return 'test'
+
+
 def main():
     prefix: str = 'terraform-backend'
     bucket: str = find_bucket(prefix)
-    repo: str = 'test'
+    repo: str = get_repo_name()
     branch: str = Repository('.').head.shorthand
     key: str = repo + '/' + branch
     os.environ["TF_INPUT"] = "false"
     os.environ["TF_IN_AUTOMATION"] = "true"
+    os.environ["TF_VAR_name"] = repo
+    os.environ["TF_VAR_branch"] = branch
 
     if bucket == '':
         # this block might need a locking mechanism
-        create_bucket()
+        create_bucket()  # todo - return bucket name to avoid second find
         bucket: str = find_bucket(prefix)
 
     create_backend(bucket, key)
