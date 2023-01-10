@@ -72,3 +72,7 @@ def test_backend_is_formatted():
     create_backend('this', 'that')
     assert os.system('terraform fmt -check') == 0
     os.chdir(test_root)
+
+
+def test_get_repo_name():
+    assert get_repo_name() == 'action-terraform'

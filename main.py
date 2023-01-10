@@ -1,4 +1,5 @@
 import os
+import subprocess
 from typing import TextIO
 import boto3
 from pygit2 import Repository
@@ -64,7 +65,8 @@ def apply(directory: str = './'):
 
 
 def get_repo_name() -> str:
-    return 'test'
+    remote = subprocess.check_output('git remote get-url origin')
+    return 'action-terraform'
 
 
 def main():
