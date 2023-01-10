@@ -4,6 +4,7 @@ import subprocess
 from typing import TextIO
 import boto3
 from pygit2 import Repository
+from decouple import config
 
 
 def find_bucket(prefix: str = 'terraform-backend') -> str:
@@ -78,6 +79,7 @@ def main():
     repo: str = get_repo_name()
     branch: str = Repository('.').head.shorthand
     key: str = repo + '/' + branch + '.json'  # .json helps with manually manipluating state files in S3
+    mode: str = config('MODE', default='plan', cast=str)
     os.environ["TF_INPUT"] = "false"
     os.environ["TF_IN_AUTOMATION"] = "true"
     os.environ["TF_VAR_name"] = repo
