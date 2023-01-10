@@ -56,7 +56,7 @@ def terraform(mode: str = 'plan', directory: str = './'):
     # todo - load .tfvars
     # todo - protect against non-head reruns
     start_directory: str = os.getcwd()
-    drift: bool = False
+    drift: int = 0
     os.chdir(directory)
     os.system('terraform init')
 
@@ -70,13 +70,13 @@ def terraform(mode: str = 'plan', directory: str = './'):
         os.system('terraform apply --auto-approve terraform.tfplan')
 
     if mode in ('apply', 'check'):
-        drift: bool = bool(os.system('terraform plan --detailed-exitcode'))
+        drift = int(os.system('terraform plan --detailed-exitcode'))
 
-    if mode == 'apply' and drift:
+    if mode == 'apply' and drift != 0:
         print('your terraform configuration is not idempotent')
         exit()
 
-    if mode == 'check' and drift:
+    if mode == 'check' and drift != 0:
         print('your terraform configuration has drifted')
         exit()
 
