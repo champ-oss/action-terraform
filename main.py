@@ -43,7 +43,7 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     f.write('terraform {\n')
     f.write('  backend "s3" {\n')
     f.write('    bucket = "' + bucket + '"\n')
-    f.write('    key    = "' + key + '.json"\n')
+    f.write('    key    = "' + key + '"\n')
     f.write('    region = "' + region + '"\n')
     f.write('  }\n')
     f.write('}\n')
@@ -77,7 +77,7 @@ def main():
     bucket: str = find_bucket(prefix)
     repo: str = get_repo_name()
     branch: str = Repository('.').head.shorthand
-    key: str = repo + '/' + branch
+    key: str = repo + '/' + branch + '.json'  # .json helps with manually manipluating state files in S3
     os.environ["TF_INPUT"] = "false"
     os.environ["TF_IN_AUTOMATION"] = "true"
     os.environ["TF_VAR_name"] = repo
