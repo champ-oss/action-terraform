@@ -1,7 +1,11 @@
 import os
+import re
+import subprocess
 from typing import TextIO
 import boto3
 from pygit2 import Repository
+# noinspection PyPackageRequirements
+from decouple import config
 
 
 def find_bucket(prefix: str = 'terraform-backend') -> str:
@@ -30,8 +34,8 @@ def create_bucket():
     # todo - return bucket name
     # todo - test
     print('creating bucket')
-
-    apply(os.path.dirname(os.path.realpath(__file__)) + '/s3')
+    s3_directory: str = os.path.dirname(os.path.realpath(__file__)) + '/s3'
+    terraform(mode='apply', directory=s3_directory)
 
 
 def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
@@ -41,44 +45,87 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     f.write('terraform {\n')
     f.write('  backend "s3" {\n')
     f.write('    bucket = "' + bucket + '"\n')
-    f.write('    key    = "' + key + '.json"\n')
+    f.write('    key    = "' + key + '"\n')
     f.write('    region = "' + region + '"\n')
     f.write('  }\n')
     f.write('}\n')
     f.close()
 
 
-def apply(directory: str = './'):
+def terraform(mode: str = 'init', directory: str = './'):
     # todo - load .tfvars
-    # todo - protect against github reruns
-    print('applying terraform configuration')
-
+    # todo - protect against non-head reruns
     start_directory: str = os.getcwd()
-
+    drift: int = 0
     os.chdir(directory)
     os.system('terraform init')
-    os.system('terraform validate')
-    os.system('terraform plan -out=terraform.tfplan')
-    os.system('terraform apply --auto-approve terraform.tfplan')
+
+    if mode in ('plan', 'check', 'apply'):
+        os.system('terraform validate')
+
+    if mode in ('plan', 'apply'):
+        os.system('terraform plan -out=terraform.tfplan')
+
+    if mode == 'apply':
+        os.system('terraform apply --auto-approve terraform.tfplan')
+
+    if mode in ('apply', 'check'):
+        drift = int(os.system('terraform plan --detailed-exitcode'))
+
+    if mode == 'apply' and drift != 0:
+        print('your terraform configuration is not idempotent')
+        exit()
+
+    if mode == 'check' and drift != 0:
+        print('your terraform configuration has drifted')
+        exit()
+
+    if mode == 'destroy':
+        os.system('terraform destroy --auto-approve')
+
     os.chdir(start_directory)
 
 
+def get_repo_name() -> str:
+    result = subprocess.check_output('git remote get-url origin', shell=True, text=True).strip()
+    url = result.removesuffix('.git')
+    name = re.sub('.*/', '', url)
+    return name
+
+
+def get_mode(job: str, workflow: str = None) -> str:
+    valid_modes: tuple = ('init', 'plan', 'apply', 'check', 'destroy')
+
+    if job in valid_modes:
+        return job
+
+    if workflow in valid_modes:
+        return workflow
+
+    return 'init'
+
+
 def main():
-    prefix: str = 'terraform-backend'
+    prefix: str = config('BACKEND_PREFIX', default='terraform-backend', cast=str)
+    workflow: str = config('GITHUB_WORKFLOW', default='main', cast=str)
+    job: str = config('GITHUB_JOB', default='main', cast=str)
+    mode: str = config('MODE', default=get_mode(job, workflow), cast=str)
     bucket: str = find_bucket(prefix)
-    repo: str = 'test'
+    repo: str = get_repo_name()
     branch: str = Repository('.').head.shorthand
-    key: str = repo + '/' + branch
+    key: str = repo + '/' + branch + '.json'  # .json helps with manually manipluating state files in S3
+    os.environ["TF_INPUT"] = "false"
+    os.environ["TF_IN_AUTOMATION"] = "true"
+    os.environ["TF_VAR_name"] = repo
+    os.environ["TF_VAR_branch"] = branch
 
     if bucket == '':
-        create_bucket()
+        # this block might need a locking mechanism
+        create_bucket()  # todo - return bucket name to avoid second find
         bucket: str = find_bucket(prefix)
 
     create_backend(bucket, key)
-
-    # todo - switch function based on github job name
-    # todo - allow overrides for explicit calls and local execution
-    apply()
+    terraform(mode)
 
     # todo - rich output
     # todo - display clickable URLs

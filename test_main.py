@@ -17,10 +17,15 @@ def setup():
 
 def teardown():
     os.chdir(test_root)
-    shutil.rmtree(test_directory)
-    shutil.rmtree('.terraform')
-    os.remove('terraform.tfplan')
-    os.remove('backend.tf')
+
+    # noinspection PyBroadException
+    try:
+        shutil.rmtree(test_directory)
+        shutil.rmtree('.terraform')
+        os.remove('terraform.tfplan')
+        os.remove('backend.tf')
+    except Exception:
+        pass
 
 
 def create_test_directory() -> str:
@@ -40,18 +45,18 @@ def create_test_directory() -> str:
 
 
 def test_apply():
-    directory: str = create_test_directory()
+    test_dir: str = create_test_directory()
 
-    apply(directory)
-    os.chdir(directory)
+    terraform(mode='apply', directory=test_dir)
+    os.chdir(test_dir)
     assert os.system('terraform plan --detailed-exitcode') == 0
     os.chdir(test_root)
 
 
-def test_apply_returns():
+def test_terraform_returns():
     # noinspection PyBroadException
     try:
-        apply(create_test_directory())
+        terraform(directory=create_test_directory())
     except Exception:
         pass  # we are only testing current working directory behavior
 
@@ -72,3 +77,16 @@ def test_backend_is_formatted():
     create_backend('this', 'that')
     assert os.system('terraform fmt -check') == 0
     os.chdir(test_root)
+
+
+def test_get_repo_name():
+    assert get_repo_name() == 'action-terraform'
+
+
+def test_get_mode():
+    assert get_mode('main') == 'init'
+    assert get_mode('blah') == 'init'
+    assert get_mode('check') == 'check'
+    assert get_mode('main', 'apply') == 'apply'
+    assert get_mode('apply', 'blah') == 'apply'
+    assert get_mode('blah', 'apply') == 'apply'
