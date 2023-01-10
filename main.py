@@ -56,6 +56,7 @@ def terraform(mode: str = 'plan', directory: str = './'):
     # todo - load .tfvars
     # todo - protect against non-head reruns
     start_directory: str = os.getcwd()
+    drift: bool = False
     os.chdir(directory)
     os.system('terraform init')
 
