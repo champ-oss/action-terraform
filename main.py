@@ -34,8 +34,8 @@ def create_bucket():
     # todo - return bucket name
     # todo - test
     print('creating bucket')
-
-    apply(os.path.dirname(os.path.realpath(__file__)) + '/s3')
+    s3_directory: str = os.path.dirname(os.path.realpath(__file__)) + '/s3'
+    terraform(mode='apply', directory=s3_directory)
 
 
 def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
@@ -52,7 +52,7 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     f.close()
 
 
-def apply(directory: str = './'):
+def terraform(mode: str = 'plan', directory: str = './'):
     # todo - load .tfvars
     # todo - protect against github reruns
     print('applying terraform configuration')
@@ -106,10 +106,7 @@ def main():
         bucket: str = find_bucket(prefix)
 
     create_backend(bucket, key)
-
-    # todo - switch function based on github job name
-    # todo - allow overrides for explicit calls and local execution
-    apply()
+    terraform(mode)
 
     # todo - rich output
     # todo - display clickable URLs

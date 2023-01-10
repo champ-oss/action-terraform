@@ -53,10 +53,10 @@ def test_apply():
     os.chdir(test_root)
 
 
-def test_apply_returns():
+def test_terraform_returns():
     # noinspection PyBroadException
     try:
-        apply(create_test_directory())
+        terraform(directory=create_test_directory())
     except Exception:
         pass  # we are only testing current working directory behavior
 
