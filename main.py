@@ -66,8 +66,8 @@ def apply(directory: str = './'):
 
 
 def get_repo_name() -> str:
-    result = subprocess.check_output('git remote get-url origin', shell=True, text=True)
-    url = result.removesuffix('.git\n')
+    result = subprocess.check_output('git remote get-url origin', shell=True, text=True).strip()
+    url = result.removesuffix('.git')
     name = re.sub('.*/', '', url)
     return name
 

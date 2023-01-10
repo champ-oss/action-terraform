@@ -17,10 +17,15 @@ def setup():
 
 def teardown():
     os.chdir(test_root)
-    shutil.rmtree(test_directory)
-    shutil.rmtree('.terraform')
-    os.remove('terraform.tfplan')
-    os.remove('backend.tf')
+
+    # noinspection PyBroadException
+    try:
+        shutil.rmtree(test_directory)
+        shutil.rmtree('.terraform')
+        os.remove('terraform.tfplan')
+        os.remove('backend.tf')
+    except Exception:
+        pass
 
 
 def create_test_directory() -> str:
