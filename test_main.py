@@ -84,8 +84,8 @@ def test_get_repo_name():
 
 
 def test_get_mode():
-    assert get_mode('main') == 'plan'
-    assert get_mode('blah') == 'plan'
+    assert get_mode('main') == 'init'
+    assert get_mode('blah') == 'init'
     assert get_mode('check') == 'check'
     assert get_mode('main', 'apply') == 'apply'
     assert get_mode('apply', 'blah') == 'apply'
