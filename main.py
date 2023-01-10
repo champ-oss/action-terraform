@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 from typing import TextIO
 import boto3
@@ -65,8 +66,10 @@ def apply(directory: str = './'):
 
 
 def get_repo_name() -> str:
-    remote = subprocess.check_output('git remote get-url origin')
-    return 'action-terraform'
+    result = subprocess.check_output('git remote get-url origin', shell=True, text=True)
+    url = result.removesuffix('.git\n')
+    name = re.sub('.*/', '', url)
+    return name
 
 
 def main():
