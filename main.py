@@ -79,8 +79,10 @@ def get_mode(job: str, workflow: str = None) -> str:
 
     if job in valid_modes:
         return job
+
     if workflow in valid_modes:
         return workflow
+    
     return 'plan'
 
 

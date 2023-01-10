@@ -81,3 +81,12 @@ def test_backend_is_formatted():
 
 def test_get_repo_name():
     assert get_repo_name() == 'action-terraform'
+
+
+def test_get_mode():
+    assert get_mode('main') == 'plan'
+    assert get_mode('blah') == 'plan'
+    assert get_mode('check') == 'check'
+    assert get_mode('main', 'apply') == 'apply'
+    assert get_mode('apply', 'blah') == 'apply'
+    assert get_mode('blah', 'apply') == 'apply'
