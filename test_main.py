@@ -45,10 +45,10 @@ def create_test_directory() -> str:
 
 
 def test_apply():
-    directory: str = create_test_directory()
+    test_dir: str = create_test_directory()
 
-    apply(directory)
-    os.chdir(directory)
+    terraform(mode='apply', directory=test_dir)
+    os.chdir(test_dir)
     assert os.system('terraform plan --detailed-exitcode') == 0
     os.chdir(test_root)
 
