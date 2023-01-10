@@ -82,12 +82,12 @@ def get_mode(job: str, workflow: str = None) -> str:
 
     if workflow in valid_modes:
         return workflow
-    
+
     return 'plan'
 
 
 def main():
-    prefix: str = config('PREFIX', default='terraform-backend', cast=str)
+    prefix: str = config('BACKEND_PREFIX', default='terraform-backend', cast=str)
     workflow: str = config('GITHUB_WORKFLOW', default='main', cast=str)
     job: str = config('GITHUB_JOB', default='main', cast=str)
     mode: str = config('MODE', default=get_mode(job, workflow), cast=str)
