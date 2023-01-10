@@ -52,7 +52,7 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
     f.close()
 
 
-def terraform(mode: str = 'plan', directory: str = './'):
+def terraform(mode: str = 'init', directory: str = './'):
     # todo - load .tfvars
     # todo - protect against non-head reruns
     start_directory: str = os.getcwd()
@@ -94,7 +94,7 @@ def get_repo_name() -> str:
 
 
 def get_mode(job: str, workflow: str = None) -> str:
-    valid_modes: tuple = ('plan', 'apply', 'check', 'destroy')
+    valid_modes: tuple = ('init', 'plan', 'apply', 'check', 'destroy')
 
     if job in valid_modes:
         return job
@@ -102,7 +102,7 @@ def get_mode(job: str, workflow: str = None) -> str:
     if workflow in valid_modes:
         return workflow
 
-    return 'plan'
+    return 'init'
 
 
 def main():
