@@ -4,6 +4,7 @@ import subprocess
 from typing import TextIO
 import boto3
 from pygit2 import Repository
+# noinspection PyPackageRequirements
 from decouple import config
 
 
@@ -73,13 +74,25 @@ def get_repo_name() -> str:
     return name
 
 
+def get_mode(job: str, workflow: str = None) -> str:
+    valid_modes: tuple = ('plan', 'apply', 'check', 'destroy')
+
+    if job in valid_modes:
+        return job
+    if workflow in valid_modes:
+        return workflow
+    return 'plan'
+
+
 def main():
-    prefix: str = 'terraform-backend'
+    prefix: str = config('PREFIX', default='terraform-backend', cast=str)
+    workflow: str = config('GITHUB_WORKFLOW', default='main', cast=str)
+    job: str = config('GITHUB_JOB', default='main', cast=str)
+    mode: str = config('MODE', default=get_mode(job, workflow), cast=str)
     bucket: str = find_bucket(prefix)
     repo: str = get_repo_name()
     branch: str = Repository('.').head.shorthand
     key: str = repo + '/' + branch + '.json'  # .json helps with manually manipluating state files in S3
-    mode: str = config('MODE', default='plan', cast=str)
     os.environ["TF_INPUT"] = "false"
     os.environ["TF_IN_AUTOMATION"] = "true"
     os.environ["TF_VAR_name"] = repo
