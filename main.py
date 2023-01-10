@@ -54,16 +54,34 @@ def create_backend(bucket: str, key: str, region: str = 'us-east-2'):
 
 def terraform(mode: str = 'plan', directory: str = './'):
     # todo - load .tfvars
-    # todo - protect against github reruns
-    print('applying terraform configuration')
-
+    # todo - protect against non-head reruns
     start_directory: str = os.getcwd()
-
     os.chdir(directory)
     os.system('terraform init')
-    os.system('terraform validate')
-    os.system('terraform plan -out=terraform.tfplan')
-    os.system('terraform apply --auto-approve terraform.tfplan')
+
+    if mode in ('plan', 'check', 'apply'):
+        os.system('terraform validate')
+
+    if mode in ('plan', 'apply'):
+        os.system('terraform plan -out=terraform.tfplan')
+
+    if mode == 'apply':
+        os.system('terraform apply --auto-approve terraform.tfplan')
+
+    if mode in ('apply', 'check'):
+        drift: bool = bool(os.system('terraform plan --detailed-exitcode'))
+
+    if mode == 'apply' and drift:
+        print('your terraform configuration is not idempotent')
+        exit()
+
+    if mode == 'check' and drift:
+        print('your terraform configuration has drifted')
+        exit()
+
+    if mode == 'destroy':
+        os.system('terraform destroy --auto-approve')
+
     os.chdir(start_directory)
 
 
